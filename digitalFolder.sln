@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32210.238
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "digitalFolder", "digitalFolder\digitalFolder.csproj", "{D5A8CB07-E5DC-4977-A717-B8FF4D9300C2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigitalFolder", "digitalFolder\DigitalFolder.csproj", "{D5A8CB07-E5DC-4977-A717-B8FF4D9300C2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
