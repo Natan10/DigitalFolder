@@ -10,6 +10,7 @@ namespace DigitalFolder.Profiles
         {
             CreateMap<CreateWalletDto, Wallet>();
             CreateMap<Wallet, ReadWalletDto>();
+            CreateMap<UpdateWalletDto, Wallet>().ForAllMembers(opts => opts.Condition((source, dest, sourceMember, destMember) => (sourceMember != null)));
         }
     }
 }

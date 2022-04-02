@@ -62,5 +62,17 @@ namespace DigitalFolder.Controllers
             return NoContent();
 
         }
+
+        [HttpPut("{id}")]
+        public IActionResult UpdateWallet(int id, [FromBody] UpdateWalletDto dto)
+        {
+            var wallet = _context.Wallets.FirstOrDefault(wallet => wallet.Id == id);
+            if (wallet == null) return NotFound();
+
+            _mapper.Map(dto, wallet);
+            _context.SaveChanges();
+
+            return NoContent();
+        }
     }
 }
