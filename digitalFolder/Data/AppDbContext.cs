@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using DigitalFolder.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace DigitalFolder.Data
 {
@@ -8,5 +9,7 @@ namespace DigitalFolder.Data
         {
 
         }
+        
+        public DbSet<Wallet> Wallets { get; set; }
     }
 }

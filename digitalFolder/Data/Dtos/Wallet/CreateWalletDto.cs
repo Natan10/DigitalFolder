@@ -1,20 +1,15 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
-namespace DigitalFolder.Models
+namespace DigitalFolder.Data.Dtos.Wallet
 {
-    public class Wallet
+    public class CreateWalletDto
     {
-        [Key, Column(name: "id")]
-        [Required]
-        public int Id { get; set; }
-
+        
         [Required(ErrorMessage = "WalletName is required!")]
         public string WalletName { get; set; }
 
         public decimal Balance { get; set; }
 
         public string Description { get; set; }
-
     }
 }
