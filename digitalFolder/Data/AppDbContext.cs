@@ -21,6 +21,17 @@ namespace DigitalFolder.Data
             return base.SaveChanges();
         }
 
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            builder.Entity<Transaction>()
+                .HasOne(transaction => transaction.Wallet)
+                .WithMany(wallet => wallet.Transactions)
+                .HasForeignKey(transaction => transaction.WalletId);
+
+
+            base.OnModelCreating(builder);
+        }
+
         private void AddTimestamps()
         {
             var entities = ChangeTracker.Entries().Where(x => x.Entity is BaseEntity && (x.State == EntityState.Added || x.State == EntityState.Modified));

@@ -16,7 +16,11 @@ namespace DigitalFolder.Models
 
         public string Description { get; set; }
 
+        [Required]
         public decimal Value { get; set; }
 
+        public int WalletId { get; set; }
+
+        public virtual Wallet Wallet { get; set; }
     }
 }
