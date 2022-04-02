@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Transactions;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace DigitalFolder.Data.Dtos.Wallet
 {
@@ -16,7 +14,7 @@ namespace DigitalFolder.Data.Dtos.Wallet
 
         public decimal Balance { get; set; }
 
-        public List<Transaction> Transactions { get; set; }
+        public object Transactions { get; set; }
 
     }
 }

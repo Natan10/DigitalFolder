@@ -1,19 +1,18 @@
 ﻿using DigitalFolder.Models.Enums;
 using System;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
 
-namespace DigitalFolder.Models
+
+namespace DigitalFolder.Data.Dtos.Transactions
 {
-    public class Transaction : BaseEntity
+    public class ReadTransactionDto
     {
-        [Key, Column(name: "id")]
+        [Key]
         [Required]
         public int Id { get; set; }
 
         [Required]
-        public TransactionType Type {get; set;}
+        public TransactionType Type { get; set; }
 
         public string Description { get; set; }
 
@@ -22,6 +21,11 @@ namespace DigitalFolder.Models
 
         public int WalletId { get; set; }
 
-        public virtual Wallet Wallet { get; set; }
+        public object Wallet { get; set; }
+
+        public DateTime CreatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
+
+
     }
 }
