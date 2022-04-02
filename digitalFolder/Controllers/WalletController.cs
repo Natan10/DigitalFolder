@@ -3,6 +3,7 @@ using DigitalFolder.Data;
 using DigitalFolder.Data.Dtos.Wallet;
 using DigitalFolder.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 
 namespace DigitalFolder.Controllers
 {
@@ -29,10 +30,14 @@ namespace DigitalFolder.Controllers
             return CreatedAtAction(nameof(GetWallet), new { Id = createdWallet.Id }, createdWallet);
         }
 
-        [HttpGet]
-        public IActionResult GetWallet()
+        [HttpGet("{id}")]
+        public IActionResult GetWallet(int id)
         {
-            return Ok(_context.Wallets);
+            var wallet = _context.Wallets.FirstOrDefault(wallet => wallet.Id == id);
+            if(wallet == null) return NotFound();
+
+            var readWallet = _mapper.Map<ReadWalletDto>(wallet);
+            return Ok(readWallet);
         }
 
     }

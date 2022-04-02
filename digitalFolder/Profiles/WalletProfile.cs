@@ -9,6 +9,7 @@ namespace DigitalFolder.Profiles
         public WalletProfile()
         {
             CreateMap<CreateWalletDto, Wallet>();
+            CreateMap<Wallet, ReadWalletDto>();
         }
     }
 }
