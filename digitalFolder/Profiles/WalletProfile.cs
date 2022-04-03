@@ -13,7 +13,16 @@ namespace DigitalFolder.Profiles
             CreateMap<Wallet, ReadWalletDto>()
                 .ForMember(wallet => wallet.Transactions, 
                 opts => opts.MapFrom(wallet => wallet.Transactions.Select(c => 
-                new {Id = c.Id ,Type = c.Type, Value = c.Value , Description = c.Description, WalletId = c.WalletId})));
+                new {
+                    Id = c.Id ,
+                    Type = c.Type,
+                    Value = c.Value , 
+                    Description = c.Description, 
+                    WalletId = c.WalletId,
+                    CreatedAt = c.CreatedAt,
+                    UpdatedAt = c.UpdatedAt
+
+            })));
 
             CreateMap<UpdateWalletDto, Wallet>().ForAllMembers(opts => opts.Condition((source, dest, sourceMember, destMember) => (sourceMember != null)));
         }

@@ -28,14 +28,15 @@ namespace DigitalFolder.Controllers
             if (wallet == null) return NotFound();
 
             if (dto.Value < 0) return BadRequest();
-            if ((wallet.Balance - dto.Value) < 0) return BadRequest();
-
+            
             if (dto.Type.Equals(TransactionType.Entrada))
             {
                 wallet.Balance += dto.Value;
             }
             else
             {
+                if ((wallet.Balance - dto.Value) < 0) return BadRequest("Saldo insuficiente!");
+
                 wallet.Balance -= dto.Value;
             }
 
@@ -43,7 +44,7 @@ namespace DigitalFolder.Controllers
             _context.Transactions.Add(transaction);
             _context.SaveChanges();
             
-            return CreatedAtAction(nameof(GetTransaction), new { Id = transaction.Id }, new { Id = transaction.Id , Value = transaction.Value });
+            return CreatedAtAction(nameof(GetTransaction), new { Id = transaction.Id }, new { Id = transaction.Id });
         }
 
         [HttpGet("{id}")]
@@ -57,6 +58,30 @@ namespace DigitalFolder.Controllers
 
             return Ok(readTransaction);
         }
+
+        [HttpDelete("{id}")]
+        public IActionResult DeleteTransaction(int id)
+        {
+            var transaction = _context.Transactions.FirstOrDefault(transaction => transaction.Id == id);
+
+            if (transaction == null) return NotFound();
+
+            if (transaction.Type.Equals(TransactionType.Entrada))
+            {
+                transaction.Wallet.Balance -= transaction.Value;
+
+            }else
+            {
+                transaction.Wallet.Balance += transaction.Value;
+            }
+
+            _context.Transactions.Remove(transaction);
+            _context.SaveChanges();
+
+            return NoContent();
+
+        }
+
     }
 
 }
