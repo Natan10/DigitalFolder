@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DigitalFolder.Models
 {
-    public class Wallet
+    public class Wallet : BaseEntity
     {
         [Key, Column(name: "id")]
         [Required]
