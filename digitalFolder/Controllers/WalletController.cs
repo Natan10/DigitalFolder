@@ -1,10 +1,6 @@
-﻿using AutoMapper;
-using DigitalFolder.Data;
-using DigitalFolder.Data.Dtos.Wallet;
-using DigitalFolder.Models;
+﻿using DigitalFolder.Data.Dtos.Wallet;
+using DigitalFolder.Services;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace DigitalFolder.Controllers
 {
@@ -12,67 +8,54 @@ namespace DigitalFolder.Controllers
     [Route("[controller]")]
     public class WalletController : ControllerBase
     {
-        private IMapper _mapper;
-        private AppDbContext _context;
+        private WalletService _service;
 
-        public WalletController(IMapper mapper, AppDbContext context)
+        public WalletController(WalletService service)
         {
-            _mapper = mapper;
-            _context = context;
+            _service = service;
         }
 
-        
+
         [HttpPost]
         public IActionResult CreateWallet([FromBody] CreateWalletDto dto)
         {
-            Wallet createdWallet = _mapper.Map<Wallet>(dto);
-            _context.Wallets.Add(createdWallet);
-            _context.SaveChanges();
+            ReadWalletDto createdWallet = _service.Create(dto);
             return CreatedAtAction(nameof(GetWallet), new { Id = createdWallet.Id }, createdWallet);
         }
 
         [HttpGet("{id}")]
         public IActionResult GetWallet(int id)
         {
-            var wallet = _context.Wallets.FirstOrDefault(wallet => wallet.Id == id);
-            if(wallet == null) return NotFound();
+            var readWallet = _service.GetWallet(id);
+            if(readWallet == null) return NotFound();
 
-            var readWallet = _mapper.Map<ReadWalletDto>(wallet);
             return Ok(readWallet);
         }
 
         [HttpGet]
         public IActionResult GetWallets()
         {
-            var wallets = _context.Wallets.ToList();
-            var readWallets = _mapper.Map<List<ReadWalletDto>>(wallets);
-            return Ok(readWallets);
+            var wallets = _service.GetAll();  
+            return Ok(wallets);
         }
 
 
         [HttpDelete("{id}")]
         public IActionResult DeleteWallet(int id)
         {
-            var wallet = _context.Wallets.FirstOrDefault(wallet => wallet.Id == id);
-            if (wallet == null) return NotFound();
+            var result = _service.Delete(id);
+            if(result.IsSuccess) return NoContent();
 
-            _context.Wallets.Remove(wallet);
-            _context.SaveChanges();
-
-            return NoContent();
-
+            return NotFound();
         }
 
         [HttpPut("{id}")]
         public IActionResult UpdateWallet(int id, [FromBody] UpdateWalletDto dto)
         {
-            var wallet = _context.Wallets.FirstOrDefault(wallet => wallet.Id == id);
-            if (wallet == null) return NotFound();
+            var result = _service.Update(id, dto);
+            if (result.IsSuccess) return NoContent();
 
-            _mapper.Map(dto, wallet);
-            _context.SaveChanges();
-
-            return NoContent();
+            return NotFound();
         }
     }
 }

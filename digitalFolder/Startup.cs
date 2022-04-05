@@ -1,4 +1,5 @@
 using DigitalFolder.Data;
+using DigitalFolder.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -26,12 +27,15 @@ namespace digitalFolder
             services.AddDbContext<AppDbContext>(opts => opts.UseLazyLoadingProxies().UseNpgsql(Configuration["ConnectionStrings:DigitalFolder"]));
 
 
-            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies()); // Checar ess método 
+            
 
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "digitalFolder", Version = "v1" });
             });
+
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies()); // Checar ess método 
+            services.AddScoped<WalletService, WalletService>();
 
         }
 
