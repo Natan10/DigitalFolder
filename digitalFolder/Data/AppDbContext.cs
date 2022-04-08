@@ -1,11 +1,13 @@
 ﻿using DigitalFolder.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 
 namespace DigitalFolder.Data
 {
-    public class AppDbContext : DbContext
+    public class AppDbContext : IdentityDbContext<IdentityUser<int>,IdentityRole<int>,int>
     {
         public AppDbContext(DbContextOptions<AppDbContext> opt): base(opt)
         {
