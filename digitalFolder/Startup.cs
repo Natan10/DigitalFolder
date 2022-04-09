@@ -34,7 +34,15 @@ namespace digitalFolder
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "digitalFolder", Version = "v1" });
             });
 
+            services.Configure<IdentityOptions>(opts =>
+            {
+                opts.Password.RequireNonAlphanumeric = false;
+                opts.Password.RequireUppercase = false;
+                opts.Password.RequiredLength = 8;
+            });
+
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies()); // Checar ess método 
+            services.AddScoped<SignUpService, SignUpService>();
             services.AddScoped<WalletService, WalletService>();
             services.AddScoped<TransactionService, TransactionService>();
 
@@ -54,6 +62,7 @@ namespace digitalFolder
 
             app.UseRouting();
 
+ 
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

@@ -4,6 +4,13 @@ namespace DigitalFolder.Data.Dtos.User
 {
     public class CreateUserDto
     {
+        public CreateUserDto()
+        {
+            UserName = Email;
+        }
+
+        public string UserName { get; set; }    
+
         [Required]
         public string Email { get; set; }
 

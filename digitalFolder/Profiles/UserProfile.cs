@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DigitalFolder.Data.Dtos.User;
 using DigitalFolder.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace DigitalFolder.Profiles
 {
@@ -9,6 +10,7 @@ namespace DigitalFolder.Profiles
         public UserProfile()
         {
             CreateMap<CreateUserDto, User>();
+            CreateMap<User, IdentityUser<int>>();
         }
     }
 }

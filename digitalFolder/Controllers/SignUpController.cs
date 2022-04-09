@@ -1,5 +1,7 @@
 ﻿using DigitalFolder.Data.Dtos.User;
+using DigitalFolder.Services;
 using Microsoft.AspNetCore.Mvc;
+using System;
 
 namespace DigitalFolder.Controllers
 {
@@ -7,15 +9,18 @@ namespace DigitalFolder.Controllers
     [Route("[controller]")]
     public class SignUpController: ControllerBase
     {
-        public SignUpController()
-        {
+        private SignUpService _service;
 
+        public SignUpController(SignUpService service)
+        {
+            _service = service;
         }
 
         [HttpPost]
-        public IActionResult SignUpUser(CreateUserDto createUserDto)
+        public IActionResult SignUpUser([FromBody] CreateUserDto createUserDto)
         {
-            // TODO
+            var result = _service.SignUpUser(createUserDto);
+            if (result.IsFailed) return BadRequest();
             return Ok();
         }
     }
