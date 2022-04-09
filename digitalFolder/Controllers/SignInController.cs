@@ -2,6 +2,8 @@
 using DigitalFolder.Services;
 using FluentResults;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
 
 namespace DigitalFolder.Controllers
 {
@@ -18,10 +20,9 @@ namespace DigitalFolder.Controllers
         [HttpPost]
         public IActionResult SignInUser(SignInRequest request)
         {
-           Result result =  _service.SignInUser(request);
-            if(result.IsFailed) return Unauthorized();
-
-            return Ok();
+            Result result = _service.SignInUser(request);
+            if (result.IsFailed) return Unauthorized(result.Errors);
+            return Ok(result.Successes[0]);
         }
 
     }

@@ -42,6 +42,8 @@ namespace digitalFolder
             });
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies()); // Checar ess método 
+            services.AddScoped<TokenService, TokenService>();
+            services.AddScoped<SignOutService, SignOutService>();
             services.AddScoped<SignInService, SignInService>();
             services.AddScoped<SignUpService, SignUpService>();
             services.AddScoped<WalletService, WalletService>();
