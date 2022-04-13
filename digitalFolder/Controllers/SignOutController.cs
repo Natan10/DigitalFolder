@@ -9,7 +9,7 @@ namespace DigitalFolder.Controllers
     public class SignOutController : ControllerBase
     {
         private SignOutService _signOutService;
-        public SignOutController(SignOutService signOutService = null)
+        public SignOutController(SignOutService signOutService)
         {
             _signOutService = signOutService;
         }

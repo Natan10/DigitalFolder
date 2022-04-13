@@ -1,9 +1,9 @@
-﻿using AutoMapper;
-using DigitalFolder.Data.Requests;
+﻿using DigitalFolder.Data.Requests;
 using FluentResults;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace DigitalFolder.Services
 {
@@ -30,6 +30,35 @@ namespace DigitalFolder.Services
 
             return Result.Fail("Login fail");
 
+        }
+
+        public Result SendTokenResetPasswordUser(SendResetRequest resetRequest)
+        {
+            IdentityUser<int> user = GetIdentityUserByEmail(resetRequest.Email);
+            if(user == null) return Result.Fail("User not found");
+            
+            var token = _signInManager.UserManager.GeneratePasswordResetTokenAsync(user).Result;
+            return Result.Ok().WithSuccess(token);
+
+        }
+
+        public Result GetTokenResetPasswordUser(EffectResetRequest effectResetRequest)
+        {
+            IdentityUser<int> user = GetIdentityUserByEmail(effectResetRequest.Email);
+            if (user == null) return Result.Fail("User not found");
+            IdentityResult result = _signInManager.UserManager.ResetPasswordAsync(user, effectResetRequest.Token, effectResetRequest.Password).Result;
+
+            if(result.Succeeded) return Result.Ok().WithSuccess("Password Reset Successfully");
+
+            return Result.Fail("Reset Password Fail");
+            
+        }
+
+
+        private IdentityUser<int> GetIdentityUserByEmail(string email)
+        {
+            IdentityUser<int> user = _signInManager.UserManager.Users.FirstOrDefault(u => u.Email.ToUpper() == email.ToUpper());
+            return user;
         }
     }
 }

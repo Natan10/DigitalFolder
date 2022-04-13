@@ -25,9 +25,12 @@ namespace digitalFolder
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+
             services.AddDbContext<AppDbContext>(opts => opts.UseLazyLoadingProxies().UseNpgsql(Configuration["ConnectionStrings:DigitalFolder"]));
+
             services.AddIdentity<IdentityUser<int>,IdentityRole<int>>()
-                .AddEntityFrameworkStores<AppDbContext>();
+                .AddEntityFrameworkStores<AppDbContext>()
+                .AddDefaultTokenProviders();
 
             services.AddSwaggerGen(c =>
             {
