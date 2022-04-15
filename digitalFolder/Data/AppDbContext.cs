@@ -28,9 +28,16 @@ namespace DigitalFolder.Data
             builder.Entity<Transaction>()
                 .HasOne(transaction => transaction.Wallet)
                 .WithMany(wallet => wallet.Transactions)
-                .HasForeignKey(transaction => transaction.WalletId);
+                .HasForeignKey(transaction => transaction.WalletId)
+                .OnDelete(DeleteBehavior.Cascade);
 
-
+            /*
+            builder.Entity<Wallet>()
+                .HasOne(w => w.User)
+                .WithMany(u => u.Wallets)
+                .HasForeignKey(w => w.UserId);
+            */
+            
             base.OnModelCreating(builder);
         }
 
