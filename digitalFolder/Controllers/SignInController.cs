@@ -2,6 +2,7 @@
 using DigitalFolder.Services;
 using FluentResults;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace DigitalFolder.Controllers
 {
@@ -16,29 +17,48 @@ namespace DigitalFolder.Controllers
         }
 
         [HttpPost]
-        public IActionResult SignInUser(SignInRequest request)
+        public async Task<IActionResult> SignInUser(SignInRequest request)
         {
-            Result result = _service.SignInUser(request);
-            if (result.IsFailed) return Unauthorized(result.Errors);
-            return Ok(result.Successes[0]);
+            try
+            {
+                Result result = await _service.SignInUser(request);
+                if (result.IsFailed) return Unauthorized(result.Errors);
+                return Ok(result.Successes[0]);
+            } catch
+            {
+                return BadRequest();
+            }
         }
 
         [HttpPost("/reset-password")]
-        public IActionResult SendTokenResetPasswordUser([FromBody] SendResetRequest resetRequest)
+        public async Task<IActionResult> SendTokenResetPasswordUser([FromBody] SendResetRequest resetRequest)
         {
-            Result result = _service.SendTokenResetPasswordUser(resetRequest);
-            if(result.IsFailed) return Unauthorized(result.Errors);
+            try
+            {
+                Result result = await _service.SendTokenResetPasswordUser(resetRequest);
+                if(result.IsFailed) return Unauthorized(result.Errors);
 
-            return Ok(result.Successes[0]);
+                return Ok(result.Successes[0]);
+            }
+            catch
+            {
+                return BadRequest();
+            }
         }
 
         [HttpPost("/reset-token")]
-        public IActionResult GetTokenResetPasswordUser(EffectResetRequest effectResetRequest)
+        public async Task<IActionResult> GetTokenResetPasswordUser(EffectResetRequest effectResetRequest)
         {
-            Result result = _service.GetTokenResetPasswordUser(effectResetRequest);
-            if (result.IsFailed) return Unauthorized(result.Errors);
+            try
+            {
+                Result result = await _service.GetTokenResetPasswordUser(effectResetRequest);
+                if (result.IsFailed) return Unauthorized(result.Errors);
 
-            return Ok(result.Successes[0]);
+                return Ok(result.Successes[0]);
+            } catch
+            {
+                return BadRequest();
+            }
         }
 
 

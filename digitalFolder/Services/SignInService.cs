@@ -4,6 +4,7 @@ using FluentResults;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace DigitalFolder.Services
 {
@@ -17,14 +18,13 @@ namespace DigitalFolder.Services
             _tokenService = tokenService;
         }
 
-        public Result SignInUser(SignInRequest request)
+        public async Task<Result> SignInUser(SignInRequest request)
         {
-            var resultIdentity = _signInManager.PasswordSignInAsync(request.Email, request.Password, false, false);
-            if (resultIdentity.Result.Succeeded)
+            var resultIdentity = await _signInManager.PasswordSignInAsync(request.Email, request.Password, false, false);
+            if (resultIdentity.Succeeded)
             {
                 var user = _signInManager.UserManager.Users.FirstOrDefault(u => u.NormalizedEmail == request.Email.ToUpper());
                 string generatedToken = _tokenService.CreateToken(user);
-                Console.WriteLine(generatedToken);
                 return Result.Ok().WithSuccess(generatedToken);
             }
 
@@ -32,21 +32,23 @@ namespace DigitalFolder.Services
 
         }
 
-        public Result SendTokenResetPasswordUser(SendResetRequest resetRequest)
+        public async Task<Result> SendTokenResetPasswordUser(SendResetRequest resetRequest)
         {
             CustomIdentityUser user = GetIdentityUserByEmail(resetRequest.Email);
             if(user == null) return Result.Fail("User not found");
             
-            var token = _signInManager.UserManager.GeneratePasswordResetTokenAsync(user).Result;
+            var token = await _signInManager.UserManager.GeneratePasswordResetTokenAsync(user);
             return Result.Ok().WithSuccess(token);
 
         }
 
-        public Result GetTokenResetPasswordUser(EffectResetRequest effectResetRequest)
+        public async Task<Result> GetTokenResetPasswordUser(EffectResetRequest effectResetRequest)
         {
             CustomIdentityUser user = GetIdentityUserByEmail(effectResetRequest.Email);
             if (user == null) return Result.Fail("User not found");
-            IdentityResult result = _signInManager.UserManager.ResetPasswordAsync(user, effectResetRequest.Token, effectResetRequest.Password).Result;
+            IdentityResult result = await _signInManager
+                .UserManager
+                .ResetPasswordAsync(user, effectResetRequest.Token, effectResetRequest.Password);
 
             if(result.Succeeded) return Result.Ok().WithSuccess("Password Reset Successfully");
 
