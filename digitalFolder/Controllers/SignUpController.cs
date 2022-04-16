@@ -1,6 +1,7 @@
 ﻿using DigitalFolder.Data.Dtos.User;
 using DigitalFolder.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace DigitalFolder.Controllers
 {
@@ -16,11 +17,18 @@ namespace DigitalFolder.Controllers
         }
 
         [HttpPost]
-        public IActionResult SignUpUser([FromBody] CreateUserDto createUserDto)
+        public async Task<IActionResult> SignUpUser([FromBody] CreateUserDto createUserDto)
         {
-            var result = _service.SignUpUser(createUserDto);
-            if (result.IsFailed) return BadRequest();
-            return Ok();
+            try
+            {
+                var result = await _service.SignUpUser(createUserDto);
+                if (result.IsFailed) return BadRequest();
+                return Ok();
+
+            } catch
+            {
+                return BadRequest();
+            }
         }
     }
 }

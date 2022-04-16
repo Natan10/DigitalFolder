@@ -17,10 +17,18 @@ namespace DigitalFolder.Controllers
         [HttpPost]
         public IActionResult SignOutUser()
         {
-            Result result = _signOutService.SignOutUser();
-            if(result.IsFailed) return Unauthorized(result.Errors);
+            try
+            {
+                Result result = _signOutService.SignOutUser();
+                if(result.IsFailed) return Unauthorized(result.Errors);
 
-            return Ok(result.Successes);
+                return Ok(result.Successes);
+
+            }
+            catch
+            {
+                return BadRequest();
+            }
         }
     }
 }
