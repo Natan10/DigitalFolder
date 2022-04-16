@@ -2,11 +2,13 @@
 using DigitalFolder.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 
 namespace DigitalFolder.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [Authorize]
     public class WalletController : ControllerBase
     {
         private WalletService _service;
@@ -20,43 +22,90 @@ namespace DigitalFolder.Controllers
         [HttpPost]
         public IActionResult CreateWallet([FromBody] CreateWalletDto dto)
         {
-            ReadWalletDto createdWallet = _service.Create(dto);
-            return CreatedAtAction(nameof(GetWallet), new { Id = createdWallet.Id }, createdWallet);
+            try
+            {
+                var userIdClaim = GetCurrentUserId();
+                ReadWalletDto createdWallet = _service.Create(dto, userIdClaim);
+                if (createdWallet == null) return BadRequest("UserId is incorrect");
+
+                return CreatedAtAction(nameof(GetWallet), new { Id = createdWallet.Id }, createdWallet);
+            } catch
+            {
+                return BadRequest();
+            }
         }
 
         [HttpGet("{id}")]
         public IActionResult GetWallet(int id)
         {
-            var readWallet = _service.GetWallet(id);
-            if(readWallet == null) return NotFound();
+            try
+            {
+                var userId = GetCurrentUserId();
+                var readWallet = _service.GetWallet(id,userId);
+                if(readWallet == null) return NotFound();
 
-            return Ok(readWallet);
+                return Ok(readWallet);
+
+            } catch
+            {
+                return BadRequest();
+            }
         }
 
         [HttpGet]
         public IActionResult GetWallets()
         {
-            var wallets = _service.GetAll();  
-            return Ok(wallets);
+            try
+            {
+                var userId = GetCurrentUserId();
+                var wallets = _service.GetAll(userId);
+                return Ok(wallets);
+            } catch
+            {
+                return BadRequest();
+            }
+           
         }
 
 
         [HttpDelete("{id}")]
         public IActionResult DeleteWallet(int id)
         {
-            var result = _service.Delete(id);
-            if(result.IsSuccess) return NoContent();
+            try
+            {
+                var userId = GetCurrentUserId();
+                var result = _service.Delete(id, userId);
+                if(result.IsSuccess) return NoContent();
 
-            return NotFound();
+                return NotFound();
+            } catch
+            {
+                return BadRequest();
+            }
         }
 
         [HttpPut("{id}")]
         public IActionResult UpdateWallet(int id, [FromBody] UpdateWalletDto dto)
         {
-            var result = _service.Update(id, dto);
-            if (result.IsSuccess) return NoContent();
+            try
+            {
+                var userId = GetCurrentUserId();
+                var result = _service.Update(id, dto, userId);
+                if (result.IsSuccess) return NoContent();
 
-            return NotFound();
+                return NotFound();
+
+            } catch
+            {
+                return BadRequest();
+            }
+        }
+
+
+        private int GetCurrentUserId()
+        {
+            var userId = HttpContext.User.Claims.FirstOrDefault(c => c.Type == "id").Value;
+            return int.Parse(userId);
         }
     }
 }

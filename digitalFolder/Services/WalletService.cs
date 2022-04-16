@@ -3,7 +3,6 @@ using DigitalFolder.Data;
 using DigitalFolder.Data.Dtos.Wallet;
 using DigitalFolder.Models;
 using FluentResults;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -20,8 +19,11 @@ namespace DigitalFolder.Services
             _context = context;
         }
 
-        public ReadWalletDto Create(CreateWalletDto dto)
+        public ReadWalletDto Create(CreateWalletDto dto, int userId)
         {
+
+            if(dto.UserId != userId) return null;
+
             Wallet createdWallet = _mapper.Map<Wallet>(dto);
             _context.Wallets.Add(createdWallet);
             _context.SaveChanges();
@@ -31,9 +33,9 @@ namespace DigitalFolder.Services
             return readWalletDto;
         }
 
-        public ReadWalletDto GetWallet(int id)
+        public ReadWalletDto GetWallet(int id, int userId)
         {
-            var wallet = _context.Wallets.FirstOrDefault(wallet => wallet.Id == id);
+            var wallet = _context.Wallets.FirstOrDefault(wallet => wallet.Id == id && wallet.UserId == userId);
             if (wallet == null) return null;
 
             var readWallet = _mapper.Map<ReadWalletDto>(wallet);
@@ -41,9 +43,10 @@ namespace DigitalFolder.Services
             return readWallet;
         }
 
-        public Result Delete(int id)
+        public Result Delete(int id, int userId)
         {
-            var wallet = _context.Wallets.FirstOrDefault(wallet => wallet.Id == id);
+
+            var wallet = _context.Wallets.FirstOrDefault(wallet => wallet.Id == id && wallet.UserId == userId);
             if (wallet == null) return Result.Fail("Wallet not found"); ;
 
             _context.Wallets.Remove(wallet);
@@ -52,17 +55,18 @@ namespace DigitalFolder.Services
             return Result.Ok();
         }
 
-        public List<ReadWalletDto> GetAll()
+        public List<ReadWalletDto> GetAll(int userId)
         {
-            var wallets = _context.Wallets.ToList();
+
+            var wallets = _context.Wallets.Where(w => w.UserId == userId).ToList();
             var readWallets = _mapper.Map<List<ReadWalletDto>>(wallets);
 
             return readWallets;
         }
 
-        public Result Update(int id, UpdateWalletDto dto)
+        public Result Update(int id, UpdateWalletDto dto, int userId)
         {
-            var wallet = _context.Wallets.FirstOrDefault(wallet => wallet.Id == id);
+            var wallet = _context.Wallets.FirstOrDefault(wallet => wallet.Id == id && wallet.UserId == userId);
             if (wallet == null) return Result.Fail("Wallet not found");
 
             _mapper.Map(dto, wallet);
