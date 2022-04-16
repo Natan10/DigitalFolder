@@ -1,4 +1,5 @@
 using DigitalFolder.Data;
+using DigitalFolder.Models;
 using DigitalFolder.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -31,7 +32,7 @@ namespace digitalFolder
 
             services.AddDbContext<AppDbContext>(opts => opts.UseLazyLoadingProxies().UseNpgsql(Configuration["ConnectionStrings:DigitalFolder"]));
 
-            services.AddIdentity<IdentityUser<int>,IdentityRole<int>>()
+            services.AddIdentity<CustomIdentityUser,IdentityRole<int>>()
                 .AddEntityFrameworkStores<AppDbContext>()
                 .AddDefaultTokenProviders();
 

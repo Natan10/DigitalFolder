@@ -1,17 +1,17 @@
 ﻿using DigitalFolder.Data.Requests;
+using DigitalFolder.Models;
 using FluentResults;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace DigitalFolder.Services
 {
     public class SignInService
     {
         private TokenService _tokenService;
-        private SignInManager<IdentityUser<int>> _signInManager;
-        public SignInService(SignInManager<IdentityUser<int>> signInManager, TokenService tokenService)
+        private SignInManager<CustomIdentityUser> _signInManager;
+        public SignInService(SignInManager<CustomIdentityUser> signInManager, TokenService tokenService)
         {
             _signInManager = signInManager;
             _tokenService = tokenService;
@@ -34,7 +34,7 @@ namespace DigitalFolder.Services
 
         public Result SendTokenResetPasswordUser(SendResetRequest resetRequest)
         {
-            IdentityUser<int> user = GetIdentityUserByEmail(resetRequest.Email);
+            CustomIdentityUser user = GetIdentityUserByEmail(resetRequest.Email);
             if(user == null) return Result.Fail("User not found");
             
             var token = _signInManager.UserManager.GeneratePasswordResetTokenAsync(user).Result;
@@ -44,7 +44,7 @@ namespace DigitalFolder.Services
 
         public Result GetTokenResetPasswordUser(EffectResetRequest effectResetRequest)
         {
-            IdentityUser<int> user = GetIdentityUserByEmail(effectResetRequest.Email);
+            CustomIdentityUser user = GetIdentityUserByEmail(effectResetRequest.Email);
             if (user == null) return Result.Fail("User not found");
             IdentityResult result = _signInManager.UserManager.ResetPasswordAsync(user, effectResetRequest.Token, effectResetRequest.Password).Result;
 
@@ -55,9 +55,9 @@ namespace DigitalFolder.Services
         }
 
 
-        private IdentityUser<int> GetIdentityUserByEmail(string email)
+        private CustomIdentityUser GetIdentityUserByEmail(string email)
         {
-            IdentityUser<int> user = _signInManager.UserManager.Users.FirstOrDefault(u => u.Email.ToUpper() == email.ToUpper());
+            CustomIdentityUser user = _signInManager.UserManager.Users.FirstOrDefault(u => u.Email.ToUpper() == email.ToUpper());
             return user;
         }
     }

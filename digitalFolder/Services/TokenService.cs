@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using DigitalFolder.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.IdentityModel.Tokens.Jwt;
@@ -9,7 +10,7 @@ namespace DigitalFolder.Services
 {
     public class TokenService
     {
-        public string CreateToken(IdentityUser<int> user)
+        public string CreateToken(CustomIdentityUser user)
         {
             Claim[] userRights = new Claim[]
             {

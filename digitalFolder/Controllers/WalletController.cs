@@ -1,5 +1,6 @@
 ﻿using DigitalFolder.Data.Dtos.Wallet;
 using DigitalFolder.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DigitalFolder.Controllers

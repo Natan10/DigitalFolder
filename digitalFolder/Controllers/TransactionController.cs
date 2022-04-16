@@ -1,11 +1,8 @@
 ﻿using AutoMapper;
 using DigitalFolder.Data;
 using DigitalFolder.Data.Dtos.Transactions;
-using DigitalFolder.Models;
-using DigitalFolder.Models.Enums;
 using DigitalFolder.Services;
 using Microsoft.AspNetCore.Mvc;
-using System.Linq;
 
 namespace DigitalFolder.Controllers
 {

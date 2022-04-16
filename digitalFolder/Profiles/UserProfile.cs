@@ -10,7 +10,7 @@ namespace DigitalFolder.Profiles
         public UserProfile()
         {
             CreateMap<CreateUserDto, User>();
-            CreateMap<User, IdentityUser<int>>();
+            CreateMap<User, CustomIdentityUser>();
         }
     }
 }

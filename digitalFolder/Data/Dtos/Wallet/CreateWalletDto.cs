@@ -11,5 +11,8 @@ namespace DigitalFolder.Data.Dtos.Wallet
         public decimal Balance { get; set; }
 
         public string Description { get; set; }
+
+        [Required]
+        public int UserId { get; set; }
     }
 }

@@ -1,13 +1,14 @@
-﻿using FluentResults;
+﻿using DigitalFolder.Models;
+using FluentResults;
 using Microsoft.AspNetCore.Identity;
 
 namespace DigitalFolder.Services
 {
     public class SignOutService
     {
-        private SignInManager<IdentityUser<int>> _signInManager;
+        private SignInManager<CustomIdentityUser> _signInManager;
 
-        public SignOutService(SignInManager<IdentityUser<int>> signInManager)
+        public SignOutService(SignInManager<CustomIdentityUser> signInManager)
         {
             _signInManager = signInManager;
         }

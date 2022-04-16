@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace DigitalFolder.Data
 {
-    public class AppDbContext : IdentityDbContext<IdentityUser<int>,IdentityRole<int>,int>
+    public class AppDbContext : IdentityDbContext<CustomIdentityUser,IdentityRole<int>,int>
     {
         public AppDbContext(DbContextOptions<AppDbContext> opt): base(opt)
         {
@@ -31,12 +31,12 @@ namespace DigitalFolder.Data
                 .HasForeignKey(transaction => transaction.WalletId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            /*
+           
             builder.Entity<Wallet>()
                 .HasOne(w => w.User)
                 .WithMany(u => u.Wallets)
-                .HasForeignKey(w => w.UserId);
-            */
+                .HasForeignKey(w => w.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
             
             base.OnModelCreating(builder);
         }

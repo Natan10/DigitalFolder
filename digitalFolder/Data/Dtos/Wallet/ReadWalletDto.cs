@@ -17,6 +17,7 @@ namespace DigitalFolder.Data.Dtos.Wallet
         [Required]
         public decimal Balance { get; set; }
 
+        public int UserId { get; set; }
         public object Transactions { get; set; }
 
         public DateTime CreatedAt { get; set; }

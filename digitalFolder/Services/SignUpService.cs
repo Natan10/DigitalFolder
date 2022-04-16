@@ -11,9 +11,9 @@ namespace DigitalFolder.Services
     public class SignUpService
     {
         private IMapper _mapper;
-        private UserManager<IdentityUser<int>> _userManager;
+        private UserManager<CustomIdentityUser> _userManager;
 
-        public SignUpService(IMapper mapper, UserManager<IdentityUser<int>> userManager)
+        public SignUpService(IMapper mapper, UserManager<CustomIdentityUser> userManager)
         {
             _mapper = mapper;
             _userManager = userManager;
@@ -22,7 +22,7 @@ namespace DigitalFolder.Services
         public Result SignUpUser(CreateUserDto createUserDto)
         {
             var user = _mapper.Map<User>(createUserDto);
-            IdentityUser<int> userIdentity = _mapper.Map<IdentityUser<int>>(user);
+            CustomIdentityUser userIdentity = _mapper.Map<CustomIdentityUser>(user);
 
             userIdentity.UserName = user.Email;
             Task<IdentityResult> resultIdentity = _userManager.CreateAsync(userIdentity, createUserDto.Password);
