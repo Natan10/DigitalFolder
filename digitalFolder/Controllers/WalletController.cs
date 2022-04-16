@@ -3,6 +3,7 @@ using DigitalFolder.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace DigitalFolder.Controllers
 {
@@ -20,12 +21,12 @@ namespace DigitalFolder.Controllers
 
 
         [HttpPost]
-        public IActionResult CreateWallet([FromBody] CreateWalletDto dto)
+        public async Task<IActionResult> CreateWallet([FromBody] CreateWalletDto dto)
         {
             try
             {
                 var userIdClaim = GetCurrentUserId();
-                ReadWalletDto createdWallet = _service.Create(dto, userIdClaim);
+                ReadWalletDto createdWallet = await _service.Create(dto, userIdClaim);
                 if (createdWallet == null) return BadRequest("UserId is incorrect");
 
                 return CreatedAtAction(nameof(GetWallet), new { Id = createdWallet.Id }, createdWallet);
@@ -69,12 +70,12 @@ namespace DigitalFolder.Controllers
 
 
         [HttpDelete("{id}")]
-        public IActionResult DeleteWallet(int id)
+        public async Task<IActionResult> DeleteWallet(int id)
         {
             try
             {
                 var userId = GetCurrentUserId();
-                var result = _service.Delete(id, userId);
+                var result = await _service.Delete(id, userId);
                 if(result.IsSuccess) return NoContent();
 
                 return NotFound();
@@ -85,12 +86,12 @@ namespace DigitalFolder.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateWallet(int id, [FromBody] UpdateWalletDto dto)
+        public async Task<IActionResult> UpdateWallet(int id, [FromBody] UpdateWalletDto dto)
         {
             try
             {
                 var userId = GetCurrentUserId();
-                var result = _service.Update(id, dto, userId);
+                var result = await _service.Update(id, dto, userId);
                 if (result.IsSuccess) return NoContent();
 
                 return NotFound();
