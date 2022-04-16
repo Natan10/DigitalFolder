@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace DigitalFolder.Data
 {
@@ -21,6 +22,12 @@ namespace DigitalFolder.Data
         {
             AddTimestamps();
             return base.SaveChanges();
+        }
+
+        public async Task<int> SaveChangesAsync()
+        {
+            AddTimestamps();
+            return await base.SaveChangesAsync();
         }
 
         protected override void OnModelCreating(ModelBuilder builder)

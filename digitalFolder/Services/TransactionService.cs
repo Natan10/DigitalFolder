@@ -4,13 +4,12 @@ using DigitalFolder.Data.Dtos.Transactions;
 using DigitalFolder.Models;
 using DigitalFolder.Models.Enums;
 using FluentResults;
-using System;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace DigitalFolder.Services
 {
-   
-
+  
     public class TransactionService
     {
         private AppDbContext _context;
@@ -22,7 +21,7 @@ namespace DigitalFolder.Services
             _mapper = mapper;
         }
 
-        public ReadTransactionDto Create(CreateTransactionDto dto)
+        public async Task<ReadTransactionDto> Create(CreateTransactionDto dto)
         {
             var wallet = _context.Wallets.FirstOrDefault(wallet => wallet.Id == dto.WalletId);
             if (wallet == null) return null;
@@ -41,8 +40,9 @@ namespace DigitalFolder.Services
             }
 
             var transaction = _mapper.Map<Transaction>(dto);
-            _context.Transactions.Add(transaction);
-            _context.SaveChanges();
+            
+            await _context.Transactions.AddAsync(transaction);
+            await _context.SaveChangesAsync();
 
             return _mapper.Map<ReadTransactionDto>(transaction);
         }
@@ -58,7 +58,7 @@ namespace DigitalFolder.Services
             return readTransaction;
         }
 
-        public Result Delete(int id)
+        public async Task<Result> Delete(int id)
         {
             var transaction = _context.Transactions.FirstOrDefault(transaction => transaction.Id == id);
 
@@ -75,7 +75,7 @@ namespace DigitalFolder.Services
             }
 
             _context.Transactions.Remove(transaction);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return Result.Ok();
         }

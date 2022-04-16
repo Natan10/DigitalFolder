@@ -1,52 +1,68 @@
-﻿using AutoMapper;
-using DigitalFolder.Data;
-using DigitalFolder.Data.Dtos.Transactions;
+﻿using DigitalFolder.Data.Dtos.Transactions;
 using DigitalFolder.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace DigitalFolder.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [Authorize]
     public class TransactionController : ControllerBase
     {
-        private AppDbContext _context;
-        private IMapper _mapper;
         private TransactionService _service;
 
-        public TransactionController(AppDbContext context, IMapper mapper, TransactionService service)
+        public TransactionController(TransactionService service)
         {
-            _context = context;
-            _mapper = mapper;
             _service = service;
         }
 
         [HttpPost]
-        public IActionResult CreateTransaction([FromBody] CreateTransactionDto dto)
+        public async Task<IActionResult> CreateTransaction([FromBody] CreateTransactionDto dto)
         {
-            var createdTransaction = _service.Create(dto);
-            if (createdTransaction == null) return BadRequest();
+            try
+            {
+                var createdTransaction = await _service.Create(dto);
+                if (createdTransaction == null) return BadRequest();
 
-            return CreatedAtAction(nameof(GetTransaction), new { Id = createdTransaction.Id }, createdTransaction);
+                return CreatedAtAction(nameof(GetTransaction), new { Id = createdTransaction.Id }, createdTransaction);
+
+            } catch
+            {
+                return BadRequest();
+            }
         }
 
         [HttpGet("{id}")]
         public IActionResult GetTransaction(int id)
         {
-            var readTransaction = _service.GetTransaction(id);
-            if(readTransaction == null) return NotFound();
+            try
+            {
+                var readTransaction = _service.GetTransaction(id);
+                if(readTransaction == null) return NotFound();
 
-            return Ok(readTransaction);
+                return Ok(readTransaction);
+
+            } catch
+            {
+                return BadRequest();
+            }
         }
 
         [HttpDelete("{id}")]
-        public IActionResult DeleteTransaction(int id)
+        public async Task<IActionResult> DeleteTransaction(int id)
         {
-            var result = _service.Delete(id);
-            if(result.IsSuccess) return NoContent();
-
-            return NotFound();
-
+            try
+            {
+                var result = await _service.Delete(id);
+                if (result.IsSuccess) return NoContent();
+                return NotFound();
+            }
+            catch 
+            {
+                return BadRequest();
+            }            
         }
 
     }
