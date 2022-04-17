@@ -47,10 +47,13 @@ namespace DigitalFolder.Services
             return _mapper.Map<ReadTransactionDto>(transaction);
         }
 
-        public ReadTransactionDto GetTransaction(int id)
+        public ReadTransactionDto GetTransaction(int id,int walletId, int userId)
         {
-            var transaction = _context.Transactions.FirstOrDefault(transaction => transaction.Id == id);
+            var wallet = _context.Wallets.FirstOrDefault(w => w.Id == walletId && w.UserId == userId);
+            if (wallet == null) return null;
 
+            var transaction = wallet.Transactions.FirstOrDefault(t => t.Id == id);
+            
             if (transaction == null) return null;
 
             var readTransaction = _mapper.Map<ReadTransactionDto>(transaction);
@@ -58,9 +61,13 @@ namespace DigitalFolder.Services
             return readTransaction;
         }
 
-        public async Task<Result> Delete(int id)
+        public async Task<Result> Delete(int id, int walletId, int userId)
         {
-            var transaction = _context.Transactions.FirstOrDefault(transaction => transaction.Id == id);
+            var wallet = _context.Wallets.FirstOrDefault(w => w.Id == walletId && w.UserId == userId);
+            if (wallet == null) return null;
+
+            //var transaction = _context.Transactions.FirstOrDefault(transaction => transaction.Id == id);
+            var transaction = wallet.Transactions.FirstOrDefault(t => t.Id == id);
 
             if (transaction == null) return Result.Fail("Transaction not found");
 
