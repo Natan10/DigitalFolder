@@ -1,3 +1,4 @@
+using DigitalFolder.Configuration;
 using DigitalFolder.Data;
 using DigitalFolder.Models;
 using DigitalFolder.Services;
@@ -35,23 +36,7 @@ namespace digitalFolder
                 .AddEntityFrameworkStores<AppDbContext>()
                 .AddDefaultTokenProviders();
 
-            services.AddAuthentication(auth =>
-            {
-                auth.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                auth.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(token =>
-            {
-                token.RequireHttpsMetadata = false;
-                token.SaveToken = true;
-                token.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("c64ee5a309c649efb8feead9c504a4c2")),
-                    ValidateIssuer = false,
-                    ValidateAudience = false,
-                    ClockSkew = TimeSpan.Zero
-                };
-            });
+          
 
             services.AddSwaggerGen(c =>
             {
@@ -72,6 +57,30 @@ namespace digitalFolder
             services.AddScoped<SignUpService, SignUpService>();
             services.AddScoped<WalletService, WalletService>();
             services.AddScoped<TransactionService, TransactionService>();
+
+            // JWT
+
+            var appTokenSettingSection = Configuration.GetSection("AppSettings");
+            services.Configure<TokenSettings>(appTokenSettingSection);
+            var tokenSettings = appTokenSettingSection.Get<TokenSettings>();
+            
+            services.AddAuthentication(auth =>
+            {
+                auth.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                auth.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(token =>
+            {
+                token.RequireHttpsMetadata = false;
+                token.SaveToken = true;
+                token.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenSettings.Secret)),
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ClockSkew = TimeSpan.Zero
+                };
+            });
 
         }
 
