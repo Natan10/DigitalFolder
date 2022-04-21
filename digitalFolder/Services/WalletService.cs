@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
 using DigitalFolder.Data;
 using DigitalFolder.Data.Dtos;
+using DigitalFolder.Data.Dtos.Transactions;
 using DigitalFolder.Data.Dtos.Wallet;
 using DigitalFolder.Models;
 using FluentResults;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -60,8 +62,6 @@ namespace DigitalFolder.Services
 
         public async Task<PaginationResponse<ReadWalletDto>> GetAll(int userId,int page, int itemsPerPage)
         {
-            // Date - startDate,endDate e EntryType
-
             page = page < 1 ? 1 : page;
             itemsPerPage = itemsPerPage < 1 ? 1 : itemsPerPage;
 
@@ -81,6 +81,29 @@ namespace DigitalFolder.Services
             pagination.Data = readWallets;
 
             return pagination;
+        }
+
+        public PaginationResponse<ReadTransactionDto> GetTransactions(int userId, int walletId, int page, int itemsPerPage)
+        {
+            var wallet = _context.Wallets.FirstOrDefault(wallet => wallet.UserId == userId && wallet.Id == walletId);
+
+            if(wallet == null) return null;
+
+            var transactions = wallet.Transactions.OrderByDescending(t => t.CreatedAt);
+
+            var pagination = new PaginationResponse<ReadTransactionDto>(transactions.Count(), page, itemsPerPage);
+
+            var dataTransactions = transactions
+               .Skip((pagination.Page - 1) * pagination.ItemsPerPage)
+               .Take(pagination.ItemsPerPage)
+               .ToList();
+
+            var readTransactions = _mapper.Map<List<ReadTransactionDto>>(dataTransactions);
+
+            pagination.Data = readTransactions;
+
+            return pagination;
+
         }
 
         public async Task<Result> Update(int id, UpdateWalletDto dto, int userId)

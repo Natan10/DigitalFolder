@@ -63,7 +63,6 @@ namespace DigitalFolder.Controllers
                 
                 var userId = GetCurrentUserId();
                 var wallets = await _service.GetAll(userId,@params.Page,@params.ItemsPerPage);
-                //var wallets = await _service.GetAll(userId,1,2);
                 return Ok(wallets);
             } catch
             {
@@ -71,6 +70,25 @@ namespace DigitalFolder.Controllers
             }
            
         }
+
+        [HttpGet("/wallet/{id}/transactions")]
+        public IActionResult GetWalletTransactions([FromRoute] int id, [FromQuery] PaginationRequest @params)
+        {
+            try
+            {
+                var userId = GetCurrentUserId();
+                var readTransactions = _service.GetTransactions(userId,id, @params.Page, @params.ItemsPerPage);
+                if (readTransactions == null) return NotFound();
+
+                return Ok(readTransactions);
+
+            }
+            catch
+            {
+                return BadRequest();
+            }
+        }
+
 
 
         [HttpDelete("{id}")]
