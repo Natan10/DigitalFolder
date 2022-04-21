@@ -1,4 +1,5 @@
-﻿using DigitalFolder.Data.Dtos.Pagination;
+﻿using DigitalFolder.Data.Dtos.Filters.Transactions;
+using DigitalFolder.Data.Dtos.Pagination;
 using DigitalFolder.Data.Dtos.Wallet;
 using DigitalFolder.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -72,12 +73,21 @@ namespace DigitalFolder.Controllers
         }
 
         [HttpGet("/wallet/{id}/transactions")]
-        public IActionResult GetWalletTransactions([FromRoute] int id, [FromQuery] PaginationRequest @params)
+        public IActionResult GetWalletTransactions(
+            [FromRoute] int id,
+            [FromQuery] PaginationRequest @params,
+            [FromQuery] FilterTransactionsRequest @filters)
         {
             try
             {
                 var userId = GetCurrentUserId();
-                var readTransactions = _service.GetTransactions(userId,id, @params.Page, @params.ItemsPerPage);
+                var readTransactions = _service.GetTransactions(
+                    userId,id, 
+                    @params.Page, 
+                    @params.ItemsPerPage, 
+                    @filters.Type,
+                    @filters.StartDate,
+                    @filters.EndDate);
                 if (readTransactions == null) return NotFound();
 
                 return Ok(readTransactions);

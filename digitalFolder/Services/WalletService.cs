@@ -4,6 +4,7 @@ using DigitalFolder.Data.Dtos;
 using DigitalFolder.Data.Dtos.Transactions;
 using DigitalFolder.Data.Dtos.Wallet;
 using DigitalFolder.Models;
+using DigitalFolder.Models.Enums;
 using FluentResults;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -83,14 +84,28 @@ namespace DigitalFolder.Services
             return pagination;
         }
 
-        public PaginationResponse<ReadTransactionDto> GetTransactions(int userId, int walletId, int page, int itemsPerPage)
+        public PaginationResponse<ReadTransactionDto> GetTransactions(
+            int userId, 
+            int walletId,
+            int page,
+            int itemsPerPage,
+            TransactionType? type, 
+            DateTime? startDate, 
+            DateTime? endDate)
         {
+            page = page < 1 ? 1 : page;
+            itemsPerPage = itemsPerPage < 1 ? 1 : itemsPerPage;
+
             var wallet = _context.Wallets.FirstOrDefault(wallet => wallet.UserId == userId && wallet.Id == walletId);
 
             if(wallet == null) return null;
 
-            var transactions = wallet.Transactions.OrderByDescending(t => t.CreatedAt);
-
+            var transactions = wallet.Transactions
+                .Where(t => (type == null || t.Type == type)
+                && (startDate == null || t.CreatedAt >= startDate) 
+                && (endDate == null || t.CreatedAt.Date <= endDate?.Date))
+                .OrderByDescending(t => t.CreatedAt);
+                
             var pagination = new PaginationResponse<ReadTransactionDto>(transactions.Count(), page, itemsPerPage);
 
             var dataTransactions = transactions

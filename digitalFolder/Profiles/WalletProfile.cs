@@ -10,6 +10,7 @@ namespace DigitalFolder.Profiles
         public WalletProfile()
         {
             CreateMap<CreateWalletDto, Wallet>();
+            /*
             CreateMap<Wallet, ReadWalletDto>()
                 .ForMember(wallet => wallet.Transactions, 
                 opts => opts.MapFrom(wallet => wallet.Transactions.Select(c => 
@@ -22,7 +23,10 @@ namespace DigitalFolder.Profiles
                     CreatedAt = c.CreatedAt,
                     UpdatedAt = c.UpdatedAt
 
-            })));
+            })));+
+            */
+
+            CreateMap<Wallet, ReadWalletDto>();
 
             CreateMap<UpdateWalletDto, Wallet>().ForAllMembers(opts => opts.Condition((source, dest, sourceMember, destMember) => (sourceMember != null)));
         }

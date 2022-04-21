@@ -24,7 +24,7 @@ namespace DigitalFolder.Data.Dtos
 
         public List<T> Data { get; set; }
 
-        public int Page { get; private set; } 
+        public int Page { get; set; } 
         public int TotalCount { get; private set; }
 
         public int TotalPages { get; private set; }
