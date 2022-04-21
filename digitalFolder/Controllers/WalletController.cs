@@ -1,7 +1,9 @@
-﻿using DigitalFolder.Data.Dtos.Wallet;
+﻿using DigitalFolder.Data.Dtos.Pagination;
+using DigitalFolder.Data.Dtos.Wallet;
 using DigitalFolder.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -54,12 +56,14 @@ namespace DigitalFolder.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetWallets()
+        public async Task<IActionResult> GetWallets([FromQuery] PaginationRequest @params)
         {
             try
             {
+                
                 var userId = GetCurrentUserId();
-                var wallets = _service.GetAll(userId);
+                var wallets = await _service.GetAll(userId,@params.Page,@params.ItemsPerPage);
+                //var wallets = await _service.GetAll(userId,1,2);
                 return Ok(wallets);
             } catch
             {
