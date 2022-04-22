@@ -4,6 +4,8 @@ using DigitalFolder.Data.Dtos.Transactions;
 using DigitalFolder.Models;
 using DigitalFolder.Models.Enums;
 using FluentResults;
+using Microsoft.AspNetCore.Http;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -85,6 +87,34 @@ namespace DigitalFolder.Services
             await _context.SaveChangesAsync();
 
             return Result.Ok();
+        }
+
+        public async Task<Result> UploadTransactionFile(int id, IFormFile file)
+        {
+            var transaction = _context.Transactions.FirstOrDefault(t => t.Id == id);
+
+            if (transaction == null) return Result.Fail("Transaction not found");
+
+            string path = Path.Combine(Directory.GetCurrentDirectory(), "Uploads");
+            
+            if (!Directory.Exists(path)) Directory.CreateDirectory(path);
+
+            string fileName = $"{id}-{file.FileName}";
+            string filePath = Path.Combine(path, fileName);
+            try
+            {
+                using var fs = new FileStream(filePath, FileMode.Create);
+                await file.CopyToAsync(fs);
+
+                transaction.File = fileName;
+              
+                await _context.SaveChangesAsync();
+
+                return Result.Ok();
+
+            } catch {
+                return Result.Fail("File saved fail");
+            }
         }
     }
 }

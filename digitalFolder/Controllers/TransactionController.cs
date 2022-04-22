@@ -1,7 +1,9 @@
 ﻿using DigitalFolder.Data.Dtos.Transactions;
 using DigitalFolder.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -67,6 +69,16 @@ namespace DigitalFolder.Controllers
             {
                 return BadRequest();
             }            
+        }
+
+
+        [HttpPost("/transaction/{id}/upload-file")]
+        public async Task<IActionResult> UploadFile([FromRoute] int id, IFormFile file)
+        {
+            var result = await _service.UploadTransactionFile(id,file);
+            if (result.IsSuccess) return NoContent();
+            return BadRequest();
+
         }
 
         private int GetCurrentUserId()

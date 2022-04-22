@@ -19,6 +19,8 @@ namespace DigitalFolder.Data.Dtos.Transactions
         [Required]
         public decimal Value { get; set; }
 
+        public string File { get; private set; }
+
         public int WalletId { get; set; }
 
         public object Wallet { get; set; }

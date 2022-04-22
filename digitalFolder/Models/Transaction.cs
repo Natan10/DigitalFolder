@@ -23,5 +23,7 @@ namespace DigitalFolder.Models
         public int WalletId { get; set; }
 
         public virtual Wallet Wallet { get; set; }
+
+        public string? File { get; set; }
     }
 }

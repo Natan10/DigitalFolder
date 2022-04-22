@@ -3,8 +3,8 @@ using DigitalFolder.Data.Dtos.Pagination;
 using DigitalFolder.Data.Dtos.Wallet;
 using DigitalFolder.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -16,7 +16,7 @@ namespace DigitalFolder.Controllers
     public class WalletController : ControllerBase
     {
         private WalletService _service;
-
+       
         public WalletController(WalletService service)
         {
             _service = service;
@@ -133,8 +133,6 @@ namespace DigitalFolder.Controllers
                 return BadRequest();
             }
         }
-
-
         private int GetCurrentUserId()
         {
             var userId = HttpContext.User.Claims.FirstOrDefault(c => c.Type == "id").Value;
