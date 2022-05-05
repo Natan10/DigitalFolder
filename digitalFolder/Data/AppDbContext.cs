@@ -32,6 +32,7 @@ namespace DigitalFolder.Data
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            // Um para muitos
             builder.Entity<Transaction>()
                 .HasOne(transaction => transaction.Wallet)
                 .WithMany(wallet => wallet.Transactions)
@@ -39,12 +40,16 @@ namespace DigitalFolder.Data
                 .OnDelete(DeleteBehavior.Cascade);
 
            
+            // Um para muitos 
             builder.Entity<Wallet>()
                 .HasOne(w => w.User)
                 .WithMany(u => u.Wallets)
                 .HasForeignKey(w => w.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
-            
+
+
+            builder.Entity<Wallet>().HasIndex(u => u.WalletName).IsUnique();
+
             base.OnModelCreating(builder);
         }
 
